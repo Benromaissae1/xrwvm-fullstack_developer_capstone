@@ -70,7 +70,13 @@ app.get('/fetchDealers', async (req, res) => {
 app.get('/fetchDealers/:state', async (req, res) => {
     const state = req.params.state;
     try {
-        const dealers = await dealerships.find({ state: state });
+        const dealers = await Dealerships.find({
+            $or: [
+                { state: state },
+                { state: state.toUpperCase() },
+                { state: state.toLowerCase() }
+            ]
+        });
         res.status(200).json(dealers);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching documents' });
